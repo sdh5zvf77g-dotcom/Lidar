@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#10231f"><meta name="description" content="Browser-based 3D terrain and vegetation filtering tool for LiDAR mesh files.">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icons/icon.svg"><link rel="stylesheet" href="style.css">
+<title>LiDAR Ground Mapper</title>
+</head>
+<body>
+<header><div class="brand"><div class="logo">⌁</div><div><h1>LiDAR Ground Mapper</h1><p>3D terrain extraction workspace</p></div></div><span class="status" id="status">Ready</span></header>
+<main>
+<section class="hero"><div><span class="eyebrow">GITHUB PAGES · MOBILE READY</span><h2>Turn a 3D scan into a<br><em>bare-earth model.</em></h2><p>Import a LiDAR mesh, filter likely vegetation and export the remaining terrain. Runs locally in your browser.</p></div></section>
+<div class="notice"><strong>Important:</strong> iPhone Safari websites cannot directly read the native LiDAR mesh. Scan with a compatible app and import an <b>.OBJ</b> or <b>.PLY</b> file here. Filtering is an estimate, not a guarantee that hidden ground will be reconstructed.</div>
+<section class="workspace">
+<div class="panel controls"><h3>1 · Load a scan</h3><label class="filedrop" for="fileInput"><span class="uploadicon">↑</span><b>Choose 3D scan file</b><small>OBJ or ASCII PLY · processed on this device</small><input id="fileInput" type="file" accept=".obj,.ply,text/plain,application/octet-stream"></label>
+<div class="or">OR</div><button class="secondary" id="demoBtn">Load sample terrain</button>
+<hr><h3>2 · Ground filter</h3><label class="field">Ground tolerance <output id="tolOut">25 cm</output><input id="tolerance" type="range" min="5" max="100" value="25" step="5"></label><label class="field">Surface slope limit <output id="slopeOut">35°</output><input id="slope" type="range" min="5" max="85" value="35" step="5"></label><label class="field">Grid cell size <output id="gridOut">50 cm</output><input id="grid" type="range" min="10" max="200" value="50" step="10"></label><p class="hint">Ground candidates are upward-facing triangles near the lowest surface in each local grid cell. Steep terrain may need a higher slope limit.</p>
+<button id="filterBtn" class="primary" disabled>Extract ground</button><button id="resetBtn" class="secondary" disabled>Show original scan</button>
+<hr><h3>3 · Export</h3><button id="exportObj" class="primary" disabled>Export ground OBJ</button><button id="exportPly" class="secondary" disabled>Export ground PLY</button><button id="exportCsv" class="secondary" disabled>Export terrain points CSV</button>
+</div>
+<div class="panel viewerpanel"><div class="viewerhead"><div><h3>3D preview</h3><p id="viewSub">Load a scan to begin</p></div><div class="viewbuttons"><button id="viewOriginal" class="tiny active">Original</button><button id="viewGround" class="tiny">Ground</button></div></div><div id="viewer"><canvas id="scene"></canvas><div class="empty" id="empty"><div class="cube">◇</div><b>Your 3D scan appears here</b><span>Drag to rotate · pinch/scroll to zoom</span></div><div class="viewtag" id="viewTag">NO MODEL</div></div><div class="legend"><span><i class="dot all"></i> Scan mesh</span><span><i class="dot ground"></i> Ground candidates</span><span>Drag to rotate · scroll/pinch to zoom</span></div>
+<div class="stats"><div><small>Vertices</small><b id="vertices">—</b></div><div><small>Triangles</small><b id="faces">—</b></div><div><small>Ground kept</small><b id="kept">—</b></div><div><small>Ground ratio</small><b id="ratio">—</b></div></div><div class="progresswrap"><div id="progress"></div></div><p class="footnote" id="resultNote">No scan loaded. Sample terrain is available for testing the interface.</p></div>
+</section>
+<section class="how"><h3>How to use it on your iPhone</h3><ol><li>Host this folder on GitHub Pages.</li><li>Use a LiDAR scanning app that can export an OBJ or PLY mesh.</li><li>Open this GitHub Pages link in Safari and choose the exported file.</li><li>Adjust the tolerance and slope, then select <b>Extract ground</b>.</li><li>Export the ground mesh for use in a 3D editor or mapping workflow.</li></ol><p>This is a mesh post-processor, not a live LiDAR scanner. Dense plants may hide the actual ground, and those missing surfaces cannot be inferred reliably from a single mesh.</p></section>
+<footer>LiDAR Ground Mapper · Browser processing · Your scan stays on your device</footer>
+</main><script src="app.js"></script><script>if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});</script>
+</body></html>

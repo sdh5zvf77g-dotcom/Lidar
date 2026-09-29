@@ -1,0 +1,1 @@
+{"name":"LiDAR Ground Mapper","short_name":"Ground Mapper","start_url":"./","display":"standalone","background_color":"#0b1514","theme_color":"#10231f","description":"Browser-based 3D terrain mesh filtering tool","icons":[{"src":"icons/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}

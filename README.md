@@ -1,24 +1,41 @@
-# LiDAR Ground Mapper
+# LiDAR Ground Mapper — GitHub Pages web app
 
-Native iPhone/iPad LiDAR scanner that reconstructs the surrounding 3D mesh and provides a **Ground Only** view designed to suppress trees, bushes and other vegetation.
+A mobile-friendly, installable browser tool for inspecting an exported 3D mesh and extracting likely ground triangles. No backend, API key, or build step is required.
 
-## What it does
-- Uses ARKit LiDAR scene reconstruction.
-- Builds a live 3D mesh while you walk around.
-- Raw Scan / Ground Only display switch.
-- Ground extraction uses local lowest-surface sampling plus upward-facing surface filtering.
-- Adjustable ground tolerance (5–40 cm).
-- Reset scan.
-- Export the current ground mesh as OBJ through the iOS share sheet.
-- Works without an internet connection after installation.
+## Deploy on GitHub Pages
 
-## Important limitation
-ARKit's standard mesh classification does not directly classify vegetation. This app therefore uses geometry rather than claiming that ARKit can identify every plant. Dense vegetation, tall grass, very steep terrain, water, or occluded ground can reduce accuracy.
+1. Create a GitHub repository (for example `lidar-ground-mapper`).
+2. Upload **all files and folders inside this project** to the repository root. Make sure `index.html` is at the root, not inside an extra nested folder.
+3. Commit to the `main` branch.
+4. Open **Settings → Pages** and select **GitHub Actions** as the build/deployment source.
+5. Wait for the `Deploy LiDAR Ground Mapper to GitHub Pages` workflow to finish. Open the URL shown in the workflow or under Settings → Pages.
+6. On iPhone, open the URL in Safari. Use Share → Add to Home Screen if you want an app-like icon.
 
-## Building
-Open `LiDARGroundMapper.xcodeproj` in Xcode on a Mac, select a LiDAR-equipped iPhone/iPad, set your development team/signing, and run.
+The workflow in `.github/workflows/pages.yml` deploys the repository root to Pages.
 
-The app requires camera permission. LiDAR scene reconstruction is checked at runtime, so unsupported devices receive a clear message.
+## Supported inputs
 
-## Suggested GitHub repository
-Upload this folder to a GitHub repository named `LiDAR-Ground-Mapper`.
+- OBJ mesh (`v` vertices and `f` polygon faces; triangulated on import)
+- ASCII PLY mesh (binary PLY is not supported in this build)
+
+## Features
+
+- Local-only browser processing; files are not uploaded to a server.
+- 3D preview with drag-to-rotate and pinch/scroll zoom.
+- Local low-surface grid + upward-facing triangle heuristic for ground candidates.
+- Adjustable ground tolerance, slope limit, and grid size.
+- Export ground-only OBJ, ASCII PLY, and vertex CSV.
+- Sample terrain with synthetic vertical vegetation for trying the UI.
+- PWA manifest and service worker for app-like installation and offline shell caching.
+
+## Important limitation: iPhone LiDAR
+
+A GitHub Pages website running in iPhone Safari cannot use Apple's native ARKit scene-reconstruction API or directly access the native LiDAR mesh. This app therefore processes mesh files exported from a separate compatible scanner app. It does **not** perform live LiDAR capture itself.
+
+## Filtering limitations
+
+The filter keeps upward-facing triangles close to the lowest triangle centroid in each X/Z grid cell. It is a heuristic, not a trained vegetation classifier. It can remove legitimate sloping ground, keep low vegetation, and cannot reconstruct terrain fully hidden from the sensor. Units in exported files are preserved; the UI assumes the input coordinate units are metres when displaying centimetre settings. If the source file uses different units, adjust/convert it before filtering.
+
+## Quick test
+
+Open the app and choose **Load sample terrain**. Rotate/zoom the preview, click **Extract ground**, toggle Ground, and export OBJ/PLY/CSV. This tests the browser-side workflow without needing a scan file.
